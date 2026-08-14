@@ -17,7 +17,9 @@ begin
    Put_Line ("  1.2 Assert correct start time of optimal interval");
    Put_Line ("  1.3 Assert correct end time of optimal interval");
    declare
-      Input : Interval_Array := ((8.0, 12.0), (10.0, 14.0), (11.0, 15.0));
+      Input : Interval_Array := ((Start_Time => 8.0, End_Time => 12.0), 
+                                 (Start_Time => 10.0, End_Time => 14.0), 
+                                 (Start_Time => 11.0, End_Time => 15.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 3, "Failed: Expected overlap 3");
@@ -30,7 +32,9 @@ begin
    Put_Line ("TEST 2 - Fully Disjoint Intervals");
    Put_Line ("  2.1 Assert max overlaps is exactly 1");
    declare
-      Input : Interval_Array := ((1.0, 2.0), (4.0, 5.0), (7.0, 8.0));
+      Input : Interval_Array := ((Start_Time => 1.0, End_Time => 2.0), 
+                                 (Start_Time => 4.0, End_Time => 5.0), 
+                                 (Start_Time => 7.0, End_Time => 8.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 1, "Failed: Disjoint sets must have overlap 1");
@@ -41,7 +45,8 @@ begin
    Put_Line ("TEST 3 - Exact Touching Boundaries");
    Put_Line ("  3.1 Assert touching edges are treated as overlaps");
    declare
-      Input : Interval_Array := ((1.0, 3.0), (3.0, 5.0));
+      Input : Interval_Array := ((Start_Time => 1.0, End_Time => 3.0), 
+                                 (Start_Time => 3.0, End_Time => 5.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 2, "Failed: Touching edges should overlap at a point");
@@ -54,7 +59,9 @@ begin
    Put_Line ("TEST 4 - Fully Nested/Concentric Intervals");
    Put_Line ("  4.1 Assert deepest nested interval is chosen");
    declare
-      Input : Interval_Array := ((0.0, 10.0), (2.0, 8.0), (4.0, 6.0));
+      Input : Interval_Array := ((Start_Time => 0.0, End_Time => 10.0), 
+                                 (Start_Time => 2.0, End_Time => 8.0), 
+                                 (Start_Time => 4.0, End_Time => 6.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 3, "Failed: Overlap count should be 3");
@@ -81,7 +88,7 @@ begin
    Put_Line ("  6.1 Assert Invalid_Interval_Error is raised");
    begin
       declare
-         Input : Interval_Array := ((5.0, 2.0));
+         Input : Interval_Array := ((Start_Time => 5.0, End_Time => 2.0));
       begin
          Basic_Marzullo (Input, Best_Int, Overlaps);
          Assert (False, "Failed: Exception not raised");
@@ -94,7 +101,7 @@ begin
    Put_Line ("TEST 7 - Single Interval Input");
    Put_Line ("  7.1 Assert algorithm mirrors the single input");
    declare
-      Input : Interval_Array := ((5.5, 9.5));
+      Input : Interval_Array := ((Start_Time => 5.5, End_Time => 9.5));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 1 and Best_Int.Start_Time = 5.5, "Failed on single element");
@@ -105,7 +112,8 @@ begin
    Put_Line ("TEST 8 - Negative Time Coordinates");
    Put_Line ("  8.1 Assert negative float times are handled correctly");
    declare
-      Input : Interval_Array := ((-10.0, -5.0), (-7.0, -2.0));
+      Input : Interval_Array := ((Start_Time => -10.0, End_Time => -5.0), 
+                                 (Start_Time => -7.0, End_Time => -2.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 2 and Best_Int.Start_Time = -7.0, "Failed on negative bounds");
@@ -116,7 +124,9 @@ begin
    Put_Line ("TEST 9 - Identical Duplicated Intervals");
    Put_Line ("  9.1 Assert identical inputs sum overlaps");
    declare
-      Input : Interval_Array := ((1.0, 5.0), (1.0, 5.0), (1.0, 5.0));
+      Input : Interval_Array := ((Start_Time => 1.0, End_Time => 5.0), 
+                                 (Start_Time => 1.0, End_Time => 5.0), 
+                                 (Start_Time => 1.0, End_Time => 5.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 3, "Failed: Duplicate instances not counted");
@@ -127,8 +137,10 @@ begin
    Put_Line ("TEST 10 - Extended Marzullo (Multiple Disjoint Peaks)");
    Put_Line ("  10.1 Assert multiple peaks are independently captured");
    declare
-      -- Peaks at [2,3] and [7,8] with 2 overlaps each
-      Input : Interval_Array := ((1.0, 3.0), (2.0, 4.0), (6.0, 8.0), (7.0, 9.0));
+      Input : Interval_Array := ((Start_Time => 1.0, End_Time => 3.0), 
+                                 (Start_Time => 2.0, End_Time => 4.0), 
+                                 (Start_Time => 6.0, End_Time => 8.0), 
+                                 (Start_Time => 7.0, End_Time => 9.0));
    begin
       Extended_Marzullo (Input, Res_Array, Res_Count, Overlaps);
       Assert (Overlaps = 2, "Failed: Expected 2 max overlaps");
@@ -142,8 +154,10 @@ begin
    Put_Line ("TEST 11 - Extended Marzullo (Capacity constraint)");
    Put_Line ("  11.1 Assert output respects array boundaries safely");
    declare
-      Input : Interval_Array := ((1.0, 2.0), (3.0, 4.0), (5.0, 6.0));
-      Tiny_Res : Result_Array (1 .. 1); -- Can only hold 1, though input has 3 disjoint peaks
+      Input : Interval_Array := ((Start_Time => 1.0, End_Time => 2.0), 
+                                 (Start_Time => 3.0, End_Time => 4.0), 
+                                 (Start_Time => 5.0, End_Time => 6.0));
+      Tiny_Res : Result_Array (1 .. 1); 
       T_Count  : Natural;
    begin
       Extended_Marzullo (Input, Tiny_Res, T_Count, Overlaps);
@@ -155,7 +169,8 @@ begin
    Put_Line ("TEST 12 - Stability with Point-Intervals (Start = End)");
    Put_Line ("  12.1 Assert intervals of 0 length are processed");
    declare
-      Input : Interval_Array := ((4.0, 4.0), (4.0, 4.0));
+      Input : Interval_Array := ((Start_Time => 4.0, End_Time => 4.0), 
+                                 (Start_Time => 4.0, End_Time => 4.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 2 and Best_Int.End_Time = 4.0, "Failed on 0-length intervals");
@@ -166,7 +181,11 @@ begin
    Put_Line ("TEST 13 - Asymmetric Overlap Densities");
    Put_Line ("  13.1 Assert algorithm doesn't latch on early suboptimal overlaps");
    declare
-      Input : Interval_Array := ((0.0, 5.0), (1.0, 4.0), (6.0, 10.0), (7.0, 9.0), (8.0, 9.0));
+      Input : Interval_Array := ((Start_Time => 0.0, End_Time => 5.0), 
+                                 (Start_Time => 1.0, End_Time => 4.0), 
+                                 (Start_Time => 6.0, End_Time => 10.0), 
+                                 (Start_Time => 7.0, End_Time => 9.0), 
+                                 (Start_Time => 8.0, End_Time => 9.0));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 3, "Failed: Peak overlap should be 3");
