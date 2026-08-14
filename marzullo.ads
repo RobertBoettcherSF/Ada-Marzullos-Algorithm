@@ -1,8 +1,8 @@
 package Marzullo is
    pragma Pure;
 
-   -- Using Float to allow for continuous time intervals as standard in Marzullo's
-   type Time_Point is new Float;
+   -- Using Float subtype to allow seamless literal assignments in aggregates
+   subtype Time_Point is Float;
 
    -- Represents a time interval [Start_Time, End_Time]
    type Time_Interval is record
