@@ -81,7 +81,7 @@ begin
    Put_Line ("  6.1 Assert Invalid_Interval_Error is raised");
    begin
       declare
-         Input : Interval_Array := ((5.0, 2.0));
+         Input : Interval_Array := (1 => Time_Interval'(5.0, 2.0));
       begin
          Basic_Marzullo (Input, Best_Int, Overlaps);
          Assert (False, "Failed: Exception not raised");
@@ -94,7 +94,7 @@ begin
    Put_Line ("TEST 7 - Single Interval Input");
    Put_Line ("  7.1 Assert algorithm mirrors the single input");
    declare
-      Input : Interval_Array := (1 => (5.5, 9.5));
+      Input : Interval_Array := (1 => Time_Interval'(5.5, 9.5));
    begin
       Basic_Marzullo (Input, Best_Int, Overlaps);
       Assert (Overlaps = 1 and Best_Int.Start_Time = 5.5, "Failed on single element");
